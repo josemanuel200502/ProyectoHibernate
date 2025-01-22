@@ -9,7 +9,7 @@
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
 
         <!-- URL de conexión -->
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/cat</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/refugio</property>
 
         <!-- Credenciales -->
         <property name="hibernate.connection.username">root</property>
@@ -19,6 +19,6 @@
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
 
-        <mapping class="org.example.entities.coche"/>
+        <mapping class="org.example.entities.animales"/>
     </session-factory>
 </hibernate-configuration>

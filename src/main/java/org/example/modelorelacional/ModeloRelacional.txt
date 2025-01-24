@@ -1,0 +1,17 @@
+CREATE TABLE familia (
+    id_familia INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT
+);
+
+CREATE TABLE animales (
+    id_animal INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    edad INT,
+    especie VARCHAR(100) NOT NULL,
+    estado VARCHAR(50),
+    id_familia INT,
+    FOREIGN KEY (id_familia) REFERENCES familia(id_familia) ON DELETE CASCADE
+);
+
+Modelo relacional

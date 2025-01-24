@@ -17,14 +17,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class MainTest {
     private AnimalesImpl animalesDAO;
     private FamiliaImpl familiaDAO;
+    private Session session;
+    private SessionFactory factory;
     private Scanner scanner;
+
 
     @BeforeEach
     void setUp() {
 
         // Inicializar la sesión de Hibernate
         SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Animales.class).buildSessionFactory();
-        Session session = factory.getCurrentSession();
+        Session session = factory.openSession();
         animalesDAO = new AnimalesImpl(session);  // Asegúrate de inicializar tu DAO adecuadamente
         familiaDAO = new FamiliaImpl(session);
         scanner = new Scanner(System.in);
@@ -33,10 +36,10 @@ class MainTest {
     @Test
     void testRegistrarNuevoAnimal() {
         // Datos de prueba
-        String nombre = "Fido";
+        String nombre = "Victor";
         String especie = "Perro";
         int edad = 3;
-        String descripcion = "Recién abandonado";
+        String descripcion = "Recien abandonado";
 
         // Crear el nuevo animal
         Animales nuevoAnimal = new Animales(nombre, especie, edad, descripcion);
@@ -45,12 +48,13 @@ class MainTest {
         animalesDAO.create(nuevoAnimal);
 
         // Verificar que el animal se ha guardado correctamente
-        Animales registrado = animalesDAO.findAllByEspecie("Perro").get(0);
+        List<Animales> animales = animalesDAO.findAllByEspecie("Perro");
+        Animales  registrado=animales.get(animales.size()-1);
         assertNotNull(registrado);
-        assertEquals("Fido", registrado.getNombre());
+        assertEquals("Victor", registrado.getNombre());
         assertEquals("Perro", registrado.getEspecie());
         assertEquals(3, registrado.getEdad());
-        assertEquals("Recién abandonado", registrado.getDescripcion());
+        assertEquals("Recien abandonado", registrado.getDescripcion());
     }
 
 
@@ -75,7 +79,7 @@ class MainTest {
     @Test
     void testRegistrarFamilia() {
         // Crear un animal y una familia
-        Animales animal = new Animales("Max", "Perro", 3, "Recién abandonado");
+        Animales animal = new Animales("Max", "Perro", 3, "Recien abandonado");
         Familia familia = new Familia("Pérez", 4, "Madrid");
 
         // Registrar el animal y la familia
@@ -109,7 +113,7 @@ class MainTest {
     @Test
     void testBuscarAnimalesPorDescripcion() {
         // Buscar animales por descripción
-        String descripcionBusqueda = "Recién abandonado";
+        String descripcionBusqueda = "Recien abandonado";
         List<Animales> animales = animalesDAO.findAllByDescripcion(descripcionBusqueda);
 
         // Verificar que la búsqueda no esté vacía
@@ -117,7 +121,7 @@ class MainTest {
 
         // Verificar que todos los animales encontrados tengan la descripción correcta
         for (Animales animal : animales) {
-            assertEquals("Recién abandonado", animal.getDescripcion());
+            assertEquals("Recien abandonado", animal.getDescripcion());
         }
     }
 

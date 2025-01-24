@@ -7,5 +7,5 @@ public enum Especies {
     CERDO_VIETNAMITA,
     SERPIENTE,
     CAMALEON,
-    ARAÑA
+    aranya
 }

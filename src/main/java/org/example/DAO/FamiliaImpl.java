@@ -10,18 +10,29 @@ import org.hibernate.cfg.Configuration;
 
 import java.util.List;
 
+/**
+ * Implementación de la interfaz {@link FamiliaInt} para gestionar las operaciones de la entidad {@link Familia}.
+ * Proporciona métodos para realizar operaciones CRUD y búsquedas específicas.
+ */
 public class FamiliaImpl implements FamiliaInt {
 
     private Session session;
 
-    // Constructor que recibe la sesión
+    /**
+     * Constructor que inicializa la sesión para realizar operaciones con Hibernate.
+     *
+     * @param session Sesión de Hibernate proporcionada externamente.
+     */
     public FamiliaImpl(Session session) {
         this.session = session;
         SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Familia.class).buildSessionFactory();
-
     }
+
     /**
-     * Devuelve todas las familias de la base de datos.
+     * Obtiene todas las familias registradas en la base de datos.
+     *
+     * @return Lista de todas las familias.
+     * @throws HibernateException Si ocurre un error al realizar la consulta.
      */
     @Override
     public List<Familia> findAll() {
@@ -40,11 +51,15 @@ public class FamiliaImpl implements FamiliaInt {
     }
 
     /**
-     * Busca una familia por su ID.
+     * Busca una familia en la base de datos por su ID.
+     *
+     * @param id Identificador único de la familia.
+     * @return La familia encontrada o {@code null} si no se encuentra.
+     * @throws HibernateException Si ocurre un error al realizar la consulta.
      */
     @Override
     public Familia findById(Long id) {
-        Session session = HibernateUtil.getSession(); // Usar getSession()
+        Session session = HibernateUtil.getSession();
         Familia familia;
 
         try {
@@ -58,9 +73,12 @@ public class FamiliaImpl implements FamiliaInt {
         return familia;
     }
 
-
     /**
-     * Busca familias por ciudad.
+     * Busca familias en la base de datos que coincidan con una ciudad específica.
+     *
+     * @param ciudad Nombre de la ciudad.
+     * @return Lista de familias que residen en la ciudad especificada.
+     * @throws HibernateException Si ocurre un error al realizar la consulta.
      */
     @Override
     public List<Familia> findByCiudad(String ciudad) {
@@ -81,7 +99,11 @@ public class FamiliaImpl implements FamiliaInt {
     }
 
     /**
-     * Crea una nueva familia.
+     * Crea una nueva familia en la base de datos.
+     *
+     * @param familia Objeto {@link Familia} que se desea crear.
+     * @return La familia creada.
+     * @throws HibernateException Si ocurre un error al realizar la operación.
      */
     @Override
     public Familia create(Familia familia) {
@@ -102,7 +124,11 @@ public class FamiliaImpl implements FamiliaInt {
     }
 
     /**
-     * Actualiza una familia existente.
+     * Actualiza los datos de una familia existente en la base de datos.
+     *
+     * @param familia Objeto {@link Familia} con los datos actualizados.
+     * @return La familia actualizada.
+     * @throws HibernateException Si ocurre un error al realizar la operación.
      */
     @Override
     public Familia update(Familia familia) {
@@ -123,7 +149,11 @@ public class FamiliaImpl implements FamiliaInt {
     }
 
     /**
-     * Elimina una familia por su ID.
+     * Elimina una familia de la base de datos utilizando su ID.
+     *
+     * @param id Identificador único de la familia que se desea eliminar.
+     * @return {@code true} si la familia fue eliminada, {@code false} si no se encontró.
+     * @throws HibernateException Si ocurre un error al realizar la operación.
      */
     @Override
     public boolean deleteById(Long id) {

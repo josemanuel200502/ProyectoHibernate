@@ -64,8 +64,6 @@ public class Main {
             }
         } while (opcion != 6);
 
-        // Cerrar sesión
-        HibernateUtil.closeSession(session);
         scanner.close();
     }
 

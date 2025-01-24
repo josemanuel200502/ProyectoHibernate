@@ -1,7 +1,6 @@
 package org.example.entities;
 
 import jakarta.persistence.*;
-import org.example.Estado;
 
 import java.io.Serializable;
 
@@ -79,9 +78,14 @@ public class Animales implements Serializable {
         return estado;
     }
 
-    public void setEstado(Estado estado) {
-        this.estado = estado;
+    public void setEstado(String estado) {
+        try {
+            this.estado = Estado.valueOf(estado.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Estado no válido. Valores válidos son: " + Estado.values());
+        }
     }
+
 
     public Familia getFamilia() {
         return familia;
@@ -90,4 +94,10 @@ public class Animales implements Serializable {
     public void setFamilia(Familia familia) {
         this.familia = familia;
     }
+
+    @Override
+    public String toString() {
+        return "Nombre: " + nombre + ", Especie: " + especie + ", Edad: " + edad + ", Descripción: " + descripcion;
+    }
 }
+

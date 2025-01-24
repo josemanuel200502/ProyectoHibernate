@@ -18,7 +18,10 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.current_session_context_class">thread</property>
 
-        <mapping class="org.example.entities.animales"/>
+        <!-- Mapear clases -->
+        <mapping class="org.example.entities.Animales"/>
+        <mapping class="org.example.entities.Familia"/> <!-- Agregado para Familia -->
     </session-factory>
 </hibernate-configuration>

@@ -1,153 +1,114 @@
 package org.example.DAO;
 
 import org.example.entities.Animales;
-import org.example.util.HibernateUtil;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
 import java.util.List;
 
 public class AnimalesImpl implements AnimalesInt {
 
-    /**
-     * Devuelve todos los animales de la base de datos.
-     */
+    private Session session;
+
+    public AnimalesImpl(Session session) {
+        this.session = session;
+        SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Animales.class).buildSessionFactory();
+
+    }
+
+
+
     @Override
     public List<Animales> findAll() throws HibernateException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Animales> animales;
-
         try {
-            animales = session.createQuery("from Animales", Animales.class).list();
+            return session.createQuery("FROM Animales", Animales.class).getResultList();
         } catch (HibernateException e) {
-            throw new HibernateException("Error al obtener todos los animales", e);
-        } finally {
-            session.close();
+            throw new HibernateException("Error al buscar animales.", e);
         }
-
-        return animales;
     }
 
-    /**
-     * Busca animales por especie.
-     */
     @Override
     public List<Animales> findAllByEspecie(String especie) throws HibernateException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Animales> animales;
-
         try {
-            animales = session.createQuery("from Animales where especie = :especie", Animales.class)
+            return session.createQuery("FROM Animales WHERE especie = :especie", Animales.class)
                     .setParameter("especie", especie)
-                    .list();
+                    .getResultList();
         } catch (HibernateException e) {
-            throw new HibernateException("Error al buscar animales por especie", e);
-        } finally {
-            session.close();
+            throw new HibernateException("Error al buscar los animales por especie .", e);
         }
-
-        return animales;
     }
 
-    /**
-     * Busca animales por edad.
-     */
     @Override
     public List<Animales> findAllByEdad(int edad) throws HibernateException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Animales> animales;
-
         try {
-            animales = session.createQuery("from Animales where edad = :edad", Animales.class)
+            return session.createQuery("FROM Animales WHERE edad = :edad", Animales.class)
                     .setParameter("edad", edad)
-                    .list();
+                    .getResultList();
         } catch (HibernateException e) {
-            throw new HibernateException("Error al buscar animales por edad", e);
-        } finally {
-            session.close();
+            throw new HibernateException("Error al buscar los animales por edad.", e);
         }
-
-        return animales;
     }
 
-    /**
-     * Busca animales por descripción.
-     *
-     * @param descripcion Descripción a buscar.
-     * @return Lista de animales que coincidan con la descripción.
-     * @throws HibernateException en caso de error de conexión con la base de datos.
-     */
     @Override
     public List<Animales> findAllByDescripcion(String descripcion) throws HibernateException {
-        return List.of();
+        try {
+            return session.createQuery("FROM Animales WHERE descripcion LIKE :descripcion", Animales.class)
+                    .setParameter("descripcion", "%" + descripcion + "%")
+                    .getResultList();
+        } catch (HibernateException e) {
+            throw new HibernateException("Error al buscar los animales por descripcion .", e);
+        }
     }
 
-    /**
-     * Crea un nuevo animal en la base de datos.
-     */
     @Override
     public Animales create(Animales animal) throws HibernateException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-
+        Transaction transaction = null;
         try {
-            session.persist(animal);
+            transaction = session.beginTransaction();
+            session.save(animal);
             transaction.commit();
+            return animal;
         } catch (HibernateException e) {
-            transaction.rollback();
-            throw new HibernateException("Error al insertar un animal", e);
-        } finally {
-            session.close();
+            if (transaction != null) transaction.rollback();
+            throw new HibernateException("Error al crear el animal.", e);
         }
-
-        return animal;
     }
 
-    /**
-     * Actualiza un animal existente.
-     */
     @Override
     public Animales update(Animales animal) throws HibernateException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-
+        Transaction transaction = null;
         try {
-            session.merge(animal);
+            transaction = session.beginTransaction();
+            session.update(animal);
             transaction.commit();
+            return animal;
         } catch (HibernateException e) {
-            transaction.rollback();
-            throw new HibernateException("Error al actualizar un animal", e);
-        } finally {
-            session.close();
+            if (transaction != null) transaction.rollback();
+            throw new HibernateException("Error actualizando el animal.", e);
         }
-
-        return animal;
     }
 
-    /**
-     * Elimina un animal por su ID.
-     */
+
+
+
     @Override
     public boolean deleteById(Long id) throws HibernateException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-
+        Transaction transaction = null;
         try {
-            Animales animal = session.find(Animales.class, id);
+            transaction = session.beginTransaction();
+            Animales animal = session.get(Animales.class, id);
             if (animal != null) {
-                session.remove(animal);
+                session.delete(animal);
                 transaction.commit();
                 return true;
             }
-            transaction.rollback();
             return false;
         } catch (HibernateException e) {
-            transaction.rollback();
-            throw new HibernateException("Error al eliminar un animal", e);
-        } finally {
-            session.close();
+            if (transaction != null) transaction.rollback();
+            throw new HibernateException("Error al borrar  animal .", e);
         }
     }
 }
-
